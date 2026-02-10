@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Informasi Barang SMAN 1 Magetan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+    <header class="gradient-bg text-white p-6 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold">SMAN 1 Magetan</h1>
+                <p class="text-sm opacity-90">Sistem Informasi Barang Hilang & Titipan</p>
+            </div>
+            <div class="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-1 overflow-hidden shadow-md">
+                <img src="https://lh3.googleusercontent.com/d/1nI-xqMil4sCB7nqdObvjL83YMF8sFDeU" 
+                     alt="Logo SMAN 1 Magetan" 
+                     class="w-full h-full object-contain"
+                     onerror="this.src='https://placehold.co/100x100?text=SMASA'">
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="flex mb-6 bg-white rounded-xl shadow-sm p-1">
+            <button id="tabLost" onclick="switchTab('lost')" class="flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 bg-blue-600 text-white">
+                <i class="fas fa-search-minus mr-2"></i>Barang Hilang
+            </button>
+            <button id="tabDeposit" onclick="switchTab('deposit')" class="flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-box-archive mr-2"></i>Barang Titipan
+            </button>
+        </div>
+
+        <div class="form-card rounded-2xl shadow-xl p-6 md:p-8">
+            <form id="itemForm" class="space-y-6">
+                <input type="hidden" id="itemType" value="hilang">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Pelapor/Penitip</label>
+                        <input type="text" id="userName" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan nama lengkap">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nomor HP (WhatsApp)</label>
+                        <input type="tel" id="userPhone" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: 08123456789">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Barang</label>
+                        <input type="text" id="itemName" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Apa nama barangnya?">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Kejadian/Titip</label>
+                        <input type="date" id="itemDate" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+
+                <div id="lostSection" class="block">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi Terakhir Diketahui</label>
+                    <textarea id="lastSeen" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" rows="2" placeholder="Sebutkan tempat terakhir barang terlihat..."></textarea>
+                </div>
+
+                <div id="depositSection" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Penerima Titipan</label>
+                            <input type="text" id="receiverName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nama orang yang dititipkan">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">No HP Penerima</label>
+                            <input type="tel" id="receiverPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="No HP yang bisa dihubungi">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Foto Barang</label>
+                    <div class="flex items-center justify-center w-full">
+                        <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                            <div id="photoPreview" class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <i class="fas fa-camera text-3xl text-gray-400 mb-3"></i>
+                                <p class="text-sm text-gray-500">Klik untuk unggah foto barang</p>
+                            </div>
+                            <input id="itemPhoto" type="file" accept="image/*" class="hidden" onchange="previewImage(event)">
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full gradient-bg text-white font-bold py-4 rounded-xl shadow-lg hover:opacity-90 transition-all flex justify-center items-center">
+                    <span>Kirim Laporan</span>
+                </button>
+            </form>
+        </div>
+
+        <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-[100] px-4">
+            <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
+                <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Berhasil Terkirim!</h3>
+                <p class="text-gray-600 mb-6">Data telah masuk ke Google Spreadsheet.</p>
+                <button onclick="closeModal()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold">Tutup</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // GANTI URL INI dengan URL dari Deployment Google Apps Script Anda
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp0sISRx2NnQqJ3p63ehtgY3vhfNv4AGh4d0ZE9xfRt07Dv1ZYk8WkQK-8oudm5wz_/exec";
+
+        function switchTab(type) {
+            const lostBtn = document.getElementById('tabLost');
+            const depositBtn = document.getElementById('tabDeposit');
+            const lostSection = document.getElementById('lostSection');
+            const depositSection = document.getElementById('depositSection');
+            const typeInput = document.getElementById('itemType');
+
+            if (type === 'lost') {
+                typeInput.value = 'hilang';
+                lostBtn.className = "flex-1 py-3 px-4 rounded-lg font-semibold bg-blue-600 text-white";
+                depositBtn.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-gray-600 hover:bg-gray-50";
+                lostSection.classList.remove('hidden');
+                depositSection.classList.add('hidden');
+            } else {
+                typeInput.value = 'titipan';
+                depositBtn.className = "flex-1 py-3 px-4 rounded-lg font-semibold bg-blue-600 text-white";
+                lostBtn.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-gray-600 hover:bg-gray-50";
+                depositSection.classList.remove('hidden');
+                lostSection.classList.add('hidden');
+            }
+        }
+
+        function previewImage(event) {
+            const preview = document.getElementById('photoPreview');
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="h-32 w-full object-contain rounded-lg">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('itemForm').reset();
+            document.getElementById('photoPreview').innerHTML = `
+                <i class="fas fa-camera text-3xl text-gray-400 mb-3"></i>
+                <p class="text-sm text-gray-500">Klik untuk unggah foto barang</p>
+            `;
+        }
+
+        document.getElementById('itemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (SCRIPT_URL === "ISI_DENGAN_URL_WEB_APP_ANDA") {
+                alert("Mohon pasang SCRIPT_URL terlebih dahulu di dalam kode.");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim Data...';
+
+            const photoFile = document.getElementById('itemPhoto').files[0];
+            let base64Photo = "";
+
+            if (photoFile) {
+                const reader = new FileReader();
+                base64Photo = await new Promise((resolve) => {
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(photoFile);
+                });
+            }
+
+            const formData = {
+                tipe: document.getElementById('itemType').value,
+                nama: document.getElementById('userName').value,
+                hp: document.getElementById('userPhone').value,
+                barang: document.getElementById('itemName').value,
+                tanggal: document.getElementById('itemDate').value,
+                lokasi: document.getElementById('lastSeen').value,
+                penerima: document.getElementById('receiverName').value,
+                hp_penerima: document.getElementById('receiverPhone').value,
+                imageUrl: base64Photo ? "Image Attached" : "No Image" 
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.result === "success") {
+                    document.getElementById('successModal').classList.remove('hidden');
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error("Error!", error.message);
+                alert("Gagal mengirim data. Pastikan Deployment Apps Script sudah benar.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+    </script>
+</body>
+</html>
